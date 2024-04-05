@@ -1,5 +1,7 @@
 package main
 
+//import "fmt"
+
 func main() {
 	//only a value of type string will be assigned to this variable
 	//var card string = "Ace of Spades"
@@ -7,5 +9,8 @@ func main() {
 	//:= only applies to NEW variables (initialization stage)
 	//card := "Ace of Spades"
 	cards := newDeck()
-	cards.print()
+	cards.saveToFile("my_cards")
+	readDeck := newDeckFromFile("my_cards")
+	readDeck.shuffle()
+	readDeck.print()
 }
