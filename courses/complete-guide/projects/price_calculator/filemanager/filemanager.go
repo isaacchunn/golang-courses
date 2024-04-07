@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 )
 
 type FileManager struct {
@@ -19,6 +20,11 @@ func (fm FileManager) ReadLines() ([]string, error) {
 		fmt.Println("Could not open file!", err)
 		return nil, errors.New("failed to open file")
 	}
+
+	//Closing file manually might lead to duplicate code, therefore use the defer keyword
+	//Execute only when the function has ended
+	defer file.Close()
+
 	//To read in line by line as file implements Reader interface
 	scanner := bufio.NewScanner(file)
 
@@ -31,11 +37,9 @@ func (fm FileManager) ReadLines() ([]string, error) {
 	err = scanner.Err()
 	if err != nil {
 		fmt.Println("Reading file content failed!", err)
-		file.Close()
 		return nil, errors.New("failed to read file contents")
 	}
 
-	file.Close()
 	return lines, nil
 }
 
@@ -44,6 +48,12 @@ func (fm FileManager) WriteResult(data interface{}) error {
 	if err != nil {
 		return errors.New("failed to create file")
 	}
+
+	defer file.Close()
+
+	//Introduce some delay for concurrency to simulate slow writing process
+	time.Sleep(3 * time.Second)
+
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(data)
 	if err != nil {
