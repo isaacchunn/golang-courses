@@ -30,7 +30,8 @@ func (job *TaxIncludedPriceJob) Process(doneChan chan bool, errorChan chan error
 	//Load data first from file
 	err := job.LoadData()
 	if err != nil {
-		fmt.Println(err)
+		errorChan <- err
+		return
 	}
 	result := make(map[string]string)
 	for _, price := range job.InputPrices {
